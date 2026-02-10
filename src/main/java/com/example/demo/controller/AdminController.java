@@ -1,9 +1,13 @@
 package com.example.demo.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.demo.entity.Admin;
+import com.example.demo.response.R;
 import com.example.demo.service.AdminService;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
@@ -19,32 +23,38 @@ public class AdminController {
 
     @Operation(summary = "增")
     @PostMapping("/admin/add")
-    public Long add(@RequestBody Admin admin)
+    public R add(@RequestBody Admin admin)
     {
         adminService.save(admin);
-        return admin.getId();
+        return R.success();
     }
 
     @Operation(summary = "查")
-    @GetMapping("/admin/list")
-    public List<Admin> list()
+    @PostMapping("/admin/list")
+    public R<PageInfo<Admin>> list(@RequestBody Admin admin,@RequestParam Integer pageNum,@RequestParam Integer pageSize)
     {
-        return adminService.list();
+        LambdaQueryWrapper<Admin> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.like(admin.getName() != null,Admin::getName,admin.getName());
+        queryWrapper.like(admin.getTel() != null,Admin::getTel,admin.getTel());
+
+        PageHelper.startPage(pageNum,pageSize);
+        PageInfo<Admin> pageInfo = new PageInfo<>(adminService.list());
+        return R.data(pageInfo);
     }
 
     @Operation(summary = "更新")
     @PostMapping("/admin/update")
-    public Long update(@RequestBody Admin admin)
+    public R update(@RequestBody Admin admin)
     {
         adminService.updateById(admin);
-        return admin.getId();
+        return R.success();
     }
 
     @Operation(summary = "删除")
     @PostMapping("/admin/del")
-    public String del(@RequestParam  Long id)
+    public R del(@RequestParam  Long id)
     {
         adminService.removeById(id);
-        return "success";
+        return R.success();
     }
 }

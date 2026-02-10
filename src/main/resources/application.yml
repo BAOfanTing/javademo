@@ -8,7 +8,7 @@ spring:
         driver-class-name: com.mysql.cj.jdbc.Driver
         url: jdbc:mysql://localhost:3306/demo?characterEncoding=UTF-8&&serverTimezone=GMT
         username: root
-        password: vamos
+        password:
         type: com.alibaba.druid.pool.DruidDataSource     #数据库连接池
         druid:
             initial-size: 5  # 初始化大小
@@ -41,3 +41,11 @@ knife4j:
     setting:
     language: zh_cn
     swagger-model-name: 实体类列表
+
+mybatis-plus:
+    configuration:
+    #MyBatis配置开启驼峰功能
+        map-underscore-to-camel-case: true
+        Log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+      #为MyBatis引用的实体类自定义别名
+    type-aliases-package: com.example.demo.entity
