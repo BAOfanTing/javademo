@@ -20,5 +20,4 @@ public class Admin {
     private String tel;
     private String headurl;
 
-
 }
