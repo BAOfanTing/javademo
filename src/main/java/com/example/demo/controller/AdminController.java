@@ -3,7 +3,9 @@ package com.example.demo.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.demo.entity.Admin;
+import com.example.demo.exception.BussinnessException;
 import com.example.demo.response.R;
+import com.example.demo.response.ResponseCode;
 import com.example.demo.service.AdminService;
 
 import com.github.pagehelper.PageHelper;
@@ -25,6 +27,13 @@ public class AdminController {
     @PostMapping("/admin/add")
     public R add(@RequestBody Admin admin)
     {
+        LambdaQueryWrapper<Admin>  queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Admin::getUsername,admin.getUsername());
+        long count = adminService.count(queryWrapper);
+        if(count > 0)
+        {
+            throw new BussinnessException(ResponseCode.USERNAME_EXISIT);
+        }
         adminService.save(admin);
         return R.success();
     }
